@@ -25,15 +25,14 @@ public class UserController {
 
     @PostMapping("/new")
     public Users saveUser(UserDto user) {
-        UUID uuid = UUID.randomUUID();
-        users=new Users();
-        users.setId(uuid.toString());
+        users = new Users();
+        users.setId(UUID.randomUUID().toString());
         users.setUserId(user.getUserId());
         users.setPassword(user.getPassword());
         return usersRepository.save(users);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Users> getAllUsers(){
         return usersRepository.findAll();
     }
