@@ -14,8 +14,7 @@ public class Question {
     private String description;
     private String type;
     private String options;
-    @ManyToOne
-    @JoinColumn(name = "questionnaireId", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
     private Questionnaire questionnaire;
 }
 
