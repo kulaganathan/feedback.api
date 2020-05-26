@@ -2,11 +2,12 @@ package com.kalaiworld.feedback.api.model;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity(name = "questionnaire")
 @Data
@@ -20,7 +21,7 @@ public class Questionnaire {
     private int responseLimit;
     private String position;
     private LocalDate interviewDate;
-    @OneToMany(mappedBy = "questionnaire")
-    private List<Question> questions;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionnaireId", orphanRemoval = true)
+    private Set<Question> questions;
 
 }

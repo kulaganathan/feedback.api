@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -35,7 +36,7 @@ public class QuestionnaireService {
         questionnaire.setPosition(questionnaireDto.getPosition());
         questionnaire.setResponseLimit(questionnaireDto.getResponseLimit());
         List<QuestionDto> questionsDto = questionnaireDto.getQuestions();
-        List<Question> questions = new ArrayList<>();
+        Set<Question> questions = new HashSet<>();
         questionsDto.forEach(questionDto -> {
             Question question = new Question();
             question.setDescription(questionDto.getDescription());
@@ -51,11 +52,15 @@ public class QuestionnaireService {
         log.info("Questionnaire Id: " + response.getQuestionnaireId());
         log.info("Questions size after saved questionnaire: " + questions.size());
         questions.forEach(question -> {
-            question.setQuestionnaire(response);
+            question.setQuestionnaireId(response.getQuestionnaireId());
             Question questionResponse = questionRepository.save(question);
             log.info("Saved question id: " + questionResponse.getId());
         });
         return response.getQuestionnaireId();
+    }
+
+    public Questionnaire getQuestionnaire(String id) {
+        return questionnaireRepository.findByQuestionnaireId(id);
     }
 }
 

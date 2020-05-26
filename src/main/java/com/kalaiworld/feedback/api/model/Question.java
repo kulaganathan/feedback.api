@@ -3,7 +3,10 @@ package com.kalaiworld.feedback.api.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity(name = "question")
 @Data
@@ -14,7 +17,7 @@ public class Question {
     private String description;
     private String type;
     private String options;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Questionnaire questionnaire;
+    private String questionnaireId;
+
 }
 

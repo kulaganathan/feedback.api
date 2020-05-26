@@ -11,4 +11,5 @@ public interface QuestionnaireRepository extends JpaRepository<Questionnaire, St
 
     List<Questionnaire> findAll();
 
+    Questionnaire findByQuestionnaireId(String id);
 }
