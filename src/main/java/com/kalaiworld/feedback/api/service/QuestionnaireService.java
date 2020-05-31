@@ -40,7 +40,9 @@ public class QuestionnaireService {
         questionsDto.forEach(questionDto -> {
             Question question = new Question();
             question.setDescription(questionDto.getDescription());
-            question.setOptions(questionDto.getOptions().get(0));
+            if (questionDto.getOptions() != null) {
+                question.setOptions(questionDto.getOptions().toString());
+            }
             question.setType(questionDto.getType().name());
             log.info("Question: " + question.toString());
             questions.add(question);
