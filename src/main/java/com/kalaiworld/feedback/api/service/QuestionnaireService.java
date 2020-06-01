@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -35,34 +34,41 @@ public class QuestionnaireService {
         questionnaire.setInterviewDate(questionnaireDto.getInterviewDate());
         questionnaire.setPosition(questionnaireDto.getPosition());
         questionnaire.setResponseLimit(questionnaireDto.getResponseLimit());
+        questionnaire.setQuestions(new HashSet<>());
+        Questionnaire response = questionnaireRepository.save(questionnaire);
+        log.info("Saved questionnaire: " + response.toString());
+        Questionnaire toUpdate = questionnaireRepository.findById(response.getId()).get();
+        log.info("Retreived questionnaire: " + response.toString());
         List<QuestionDto> questionsDto = questionnaireDto.getQuestions();
-        Set<Question> questions = new HashSet<>();
         questionsDto.forEach(questionDto -> {
             Question question = new Question();
             question.setDescription(questionDto.getDescription());
+            question.setQuestionnaire(toUpdate);
             if (questionDto.getOptions() != null) {
                 question.setOptions(questionDto.getOptions().toString());
             }
             question.setType(questionDto.getType().name());
             log.info("Question: " + question.toString());
-            questions.add(question);
-        });
-        questionnaire.setQuestions(questions);
-        questionnaire.setQuestionnaireId(UUID.randomUUID().toString());
-        Questionnaire response = questionnaireRepository.save(questionnaire);
-        log.info("Saved questionnaire: " + response.toString());
-        log.info("Questionnaire Id: " + response.getQuestionnaireId());
-        log.info("Questions size after saved questionnaire: " + questions.size());
-        questions.forEach(question -> {
-            question.setQuestionnaireId(response.getQuestionnaireId());
             Question questionResponse = questionRepository.save(question);
-            log.info("Saved question id: " + questionResponse.getId());
+
         });
-        return response.getQuestionnaireId();
+//        Questionnaire updatedQuestionnaire = questionnaireRepository.save(toUpdate);
+//        questionnaire.setQuestions(questions);
+//        questionnaire.setId(UUID.randomUUID().toString());
+//        log.info("Updated questionnaire: " + updatedQuestionnaire.toString());
+//        log.info("Questionnaire Id: " + updatedQuestionnaire.getId().toString());
+        log.info("Questions size after updated questionnaire: " + toUpdate.getQuestions().size());
+//        questions.forEach(question -> {
+//            Question questionResponse = questionRepository.save(question);
+//            log.info("Saved question id: " + questionResponse.getId());
+//        });
+        return response.getId().toString();
     }
 
-    public Questionnaire getQuestionnaire(String id) {
-        return questionnaireRepository.findByQuestionnaireId(id);
+    public Questionnaire getQuestionnaire(Long id) {
+        log.info("Inside Get Questionnaire service.");
+        Optional<Questionnaire> optionalQuestionnaire = questionnaireRepository.findById(id);
+        return optionalQuestionnaire.get();
     }
 }
 

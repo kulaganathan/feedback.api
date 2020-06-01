@@ -19,11 +19,13 @@ public class QuestionnaireController {
 
     @PostMapping
     public ResponseEntity<String> createQuestionnaire(@RequestBody QuestionnaireDto questionnaireDto) {
+        log.info("Create Questionnaire API");
         return new ResponseEntity<String>(questionnaireService.saveQuestionnaire(questionnaireDto), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<Questionnaire> getQuestionnaire(String id) {
+    public ResponseEntity<Questionnaire> getQuestionnaire(Long id) {
+        log.info("Get Questionnaire API");
         return new ResponseEntity<Questionnaire>(questionnaireService.getQuestionnaire(id), HttpStatus.OK);
     }
 

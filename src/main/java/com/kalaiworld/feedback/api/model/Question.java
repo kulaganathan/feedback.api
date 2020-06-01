@@ -2,22 +2,24 @@ package com.kalaiworld.feedback.api.model;
 
 
 import lombok.Data;
+import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity(name = "question")
 @Data
-public class Question {
+@ToString(exclude = {"questionnaire"})
+public class Question implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private String type;
     private String options;
-    private String questionnaireId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "questionnaire_id")
+    private Questionnaire questionnaire;
 
 }
 
