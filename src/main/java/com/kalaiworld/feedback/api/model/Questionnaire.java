@@ -1,7 +1,7 @@
 package com.kalaiworld.feedback.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -12,6 +12,7 @@ import java.util.Set;
 @Entity(name = "questionnaire")
 @Data
 @ToString(exclude = {"questions"})
+@EqualsAndHashCode(exclude = {"questions"})
 public class Questionnaire implements Serializable {
 
     @Id
@@ -23,7 +24,6 @@ public class Questionnaire implements Serializable {
     private int responseLimit;
     private String position;
     private LocalDate interviewDate;
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionnaire", orphanRemoval = true)
     private Set<Question> questions;
 

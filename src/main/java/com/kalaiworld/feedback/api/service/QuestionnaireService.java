@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -28,30 +29,31 @@ public class QuestionnaireService {
     @Transactional
     public String saveQuestionnaire(QuestionnaireDto questionnaireDto) {
         Questionnaire questionnaire = new Questionnaire();
+        Set<Question> questions = new HashSet<>();
+        List<QuestionDto> questionsDto = questionnaireDto.getQuestions();
+        questionsDto.forEach(questionDto -> {
+            Question question = new Question();
+            question.setQuestionnaire(questionnaire);
+            question.setDescription(questionDto.getDescription());
+            if (questionDto.getOptions() != null) {
+                question.setOptions(questionDto.getOptions().toString());
+            }
+            question.setType(questionDto.getType().name());
+            log.info("Question: " + question.toString());
+            questions.add(question);
+        });
         questionnaire.setIsDefault(questionnaireDto.getIsDefault());
         questionnaire.setTemplateName(questionnaireDto.getTemplateName());
         questionnaire.setCompanyName(questionnaireDto.getCompanyName());
         questionnaire.setInterviewDate(questionnaireDto.getInterviewDate());
         questionnaire.setPosition(questionnaireDto.getPosition());
         questionnaire.setResponseLimit(questionnaireDto.getResponseLimit());
-        questionnaire.setQuestions(new HashSet<>());
+        questionnaire.setQuestions(questions);
         Questionnaire response = questionnaireRepository.save(questionnaire);
         log.info("Saved questionnaire: " + response.toString());
         Questionnaire toUpdate = questionnaireRepository.findById(response.getId()).get();
         log.info("Retreived questionnaire: " + response.toString());
-        List<QuestionDto> questionsDto = questionnaireDto.getQuestions();
-        questionsDto.forEach(questionDto -> {
-            Question question = new Question();
-            question.setDescription(questionDto.getDescription());
-            question.setQuestionnaire(toUpdate);
-            if (questionDto.getOptions() != null) {
-                question.setOptions(questionDto.getOptions().toString());
-            }
-            question.setType(questionDto.getType().name());
-            log.info("Question: " + question.toString());
-            Question questionResponse = questionRepository.save(question);
 
-        });
 //        Questionnaire updatedQuestionnaire = questionnaireRepository.save(toUpdate);
 //        questionnaire.setQuestions(questions);
 //        questionnaire.setId(UUID.randomUUID().toString());
